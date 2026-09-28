@@ -193,3 +193,99 @@ export function getBreadcrumbJsonLd(
     })),
   };
 }
+
+type ArticleJsonLdInput = {
+  title: string;
+  description: string;
+  path: `/${string}`;
+  publishedAt: string;
+  updatedAt: string;
+  keywords: string[];
+  sectionName: string;
+  wordCount: number;
+};
+
+export function getArticleJsonLd(article: ArticleJsonLdInput): JsonLdObject {
+  const url = new URL(article.path, siteConfig.url).toString();
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": url,
+    },
+    headline: article.title,
+    description: article.description,
+    url,
+    inLanguage: "ro",
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt,
+    articleSection: article.sectionName,
+    keywords: article.keywords.join(", "),
+    wordCount: article.wordCount,
+    image: new URL(siteConfig.socialImage, siteConfig.url).toString(),
+    author: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    about: {
+      "@type": "Service",
+      name: "Transport persoane si colete Romania - Europa",
+      provider: {
+        "@type": "Organization",
+        name: siteConfig.name,
+      },
+    },
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".article-takeaway"],
+    },
+  };
+}
+
+export function getBlogJsonLd(
+  posts: ReadonlyArray<{ slug: string; title: string; description: string }>,
+): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: `Blog ${siteConfig.name}`,
+    url: `${siteConfig.url}/blog/`,
+    inLanguage: "ro",
+    description:
+      "Ghiduri despre transport persoane si colete intre Romania si Europa: rute, acte, bagaje, tarife si sfaturi pentru diaspora.",
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.description,
+      url: `${siteConfig.url}/blog/${post.slug}/`,
+    })),
+  };
+}
+
+export function getItemListJsonLd(
+  items: ReadonlyArray<{ name: string; path: `/${string}` }>,
+): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      url: new URL(item.path, siteConfig.url).toString(),
+    })),
+  };
+}

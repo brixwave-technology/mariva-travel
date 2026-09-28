@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { MobileCallBar } from "@/components/layout/mobile-call-bar";
+import { BlogTeaserSection } from "@/components/sections/blog-teaser-section";
 import { FaqSection } from "@/components/sections/faq-section";
 import { FinalCtaSection } from "@/components/sections/final-cta-section";
 import { FleetSection } from "@/components/sections/fleet-section";
@@ -46,6 +47,7 @@ export default function HomePage() {
         <RoutesSection />
         <FleetSection />
         <TrustSection />
+        <BlogTeaserSection />
         <FaqSection
           title="Intrebari frecvente despre transportul international"
           intro="Am adunat raspunsurile esentiale pentru clientii care cauta transport persoane si colete Romania - Europa, cu plecari zilnice, preluare de la adresa si confirmare rapida."

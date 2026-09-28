@@ -8,6 +8,7 @@ const navLinks = [
   { label: "Rute", href: "#rute", eyebrow: "Destinatii" },
   { label: "Flota", href: "#flota", eyebrow: "Confort" },
   { label: "Despre Noi", href: "#incredere", eyebrow: "Incredere" },
+  { label: "Ghiduri", href: "#ghiduri", eyebrow: "Blog" },
   { label: "Contact", href: "#contact", eyebrow: "Rezervari" },
 ] as const;
 

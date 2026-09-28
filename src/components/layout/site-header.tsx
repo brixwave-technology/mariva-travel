@@ -33,6 +33,12 @@ export function SiteHeader({ currentPageLabel }: SiteHeaderProps) {
               Rute
             </Link>
             <Link
+              href="/blog/"
+              className="text-sm font-medium text-muted transition-colors hover:text-accent"
+            >
+              Blog
+            </Link>
+            <Link
               href="/#contact"
               className="text-sm font-medium text-muted transition-colors hover:text-accent"
             >
