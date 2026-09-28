@@ -1,5 +1,6 @@
 import { coletePosts } from "./posts-colete";
 import { diasporaPosts } from "./posts-diaspora";
+import { extraPosts } from "./posts-extra";
 import { rezervariPosts } from "./posts-rezervari";
 import { rutePosts } from "./posts-rute";
 import { sfaturiPosts } from "./posts-sfaturi";
@@ -15,6 +16,7 @@ const allPosts: BlogPost[] = [
   ...sfaturiPosts,
   ...rezervariPosts,
   ...diasporaPosts,
+  ...extraPosts,
 ];
 
 /** Articole ordonate descrescator dupa data publicarii. */
