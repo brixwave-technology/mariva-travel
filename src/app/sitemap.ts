@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
+import { blogPosts } from "@/content/blog";
 
 export const dynamic = "force-static";
 
@@ -24,6 +25,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "daily" as const,
       priority: 0.8,
+    })),
+    {
+      url: `${siteConfig.url}/blog/`,
+      lastModified,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    ...blogPosts.map((post) => ({
+      url: `${siteConfig.url}/blog/${post.slug}/`,
+      lastModified: new Date(`${post.updatedAt}T00:00:00Z`),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
   ];
 }
