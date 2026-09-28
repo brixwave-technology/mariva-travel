@@ -29,11 +29,29 @@ function getOpeningHoursSpecification(): JsonLdObject[] {
   }));
 }
 
+const organizationId = `${siteConfig.url}/#organization`;
+const websiteId = `${siteConfig.url}/#website`;
+
+const organizationReference: JsonLdObject = {
+  "@type": "Organization",
+  "@id": organizationId,
+  name: siteConfig.name,
+  url: siteConfig.url,
+};
+
 export function getOrganizationJsonLd(): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": organizationId,
     name: siteConfig.name,
+    logo: {
+      "@type": "ImageObject",
+      url: `${siteConfig.url}/brand/logo.png`,
+      width: 512,
+      height: 512,
+    },
+    image: new URL(siteConfig.socialImage, siteConfig.url).toString(),
     legalName: siteConfig.legalName,
     url: siteConfig.url,
     description: siteConfig.description,
@@ -74,10 +92,13 @@ export function getWebsiteJsonLd(): JsonLdObject {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": websiteId,
     name: siteConfig.name,
+    alternateName: "Mariva Travel - transport persoane si colete",
     url: siteConfig.url,
     inLanguage: "ro",
     description: siteConfig.description,
+    publisher: { "@id": organizationId },
   };
 }
 
@@ -88,13 +109,7 @@ export function getTransportServiceJsonLd(): JsonLdObject {
     name: "Transport persoane si colete Romania - Europa",
     serviceType: "Transport international persoane si colete door-to-door",
     category: "Passenger transport and parcel delivery",
-    provider: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-      telephone: siteConfig.dispatchPhoneE164,
-      sameAs: [getWhatsAppBaseHref()],
-    },
+    provider: organizationReference,
     areaServed: siteConfig.areaServedCountries.map((country) => ({
       "@type": "Country",
       name: country,
@@ -133,12 +148,7 @@ export function getRouteServiceJsonLd(market: DestinationMarket): JsonLdObject {
     "@type": "Service",
     name: `Transport persoane si colete Romania - ${market.country}`,
     serviceType: `Transport international door-to-door Romania - ${market.country}`,
-    provider: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-      telephone: siteConfig.dispatchPhoneE164,
-    },
+    provider: organizationReference,
     areaServed: [
       {
         "@type": "Country",
@@ -149,7 +159,7 @@ export function getRouteServiceJsonLd(market: DestinationMarket): JsonLdObject {
         name: market.country,
       },
     ],
-    description: `${siteConfig.name} ofera transport persoane si colete door-to-door pe ruta Romania - ${market.country}, cu rezervari rapide si preluare de la adresa.`,
+    description: market.intro,
     audience: {
       "@type": "Audience",
       audienceType: "pasageri, familii, muncitori sezonieri, expati, clienti care trimit colete",
@@ -158,6 +168,34 @@ export function getRouteServiceJsonLd(market: DestinationMarket): JsonLdObject {
       "@type": "Offer",
       availability: "https://schema.org/InStock",
       url: `${siteConfig.url}/transport/${market.slug}/`,
+    },
+    availableChannel: {
+      "@type": "ServiceChannel",
+      serviceUrl: `${siteConfig.url}/transport/${market.slug}/`,
+      servicePhone: siteConfig.dispatchPhoneE164,
+      availableLanguage: ["ro"],
+    },
+  };
+}
+
+export function getParcelServiceJsonLd(): JsonLdObject {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: "Transport colete Romania - Europa",
+    serviceType: "Transport colete si pachete door-to-door",
+    description:
+      "Preluare colete, bagaje si pachete de la adresa din Romania si livrare la destinatar in 10 tari europene, pe curse regulate.",
+    provider: organizationReference,
+    areaServed: siteConfig.areaServedCountries.map((country) => ({
+      "@type": "Country",
+      name: country,
+    })),
+    availableChannel: {
+      "@type": "ServiceChannel",
+      serviceUrl: `${siteConfig.url}/transport-colete/`,
+      servicePhone: siteConfig.dispatchPhoneE164,
+      availableLanguage: ["ro"],
     },
   };
 }
@@ -203,6 +241,7 @@ type ArticleJsonLdInput = {
   keywords: string[];
   sectionName: string;
   wordCount: number;
+  imageKey: string;
 };
 
 export function getArticleJsonLd(article: ArticleJsonLdInput): JsonLdObject {
@@ -224,17 +263,16 @@ export function getArticleJsonLd(article: ArticleJsonLdInput): JsonLdObject {
     articleSection: article.sectionName,
     keywords: article.keywords.join(", "),
     wordCount: article.wordCount,
-    image: new URL(siteConfig.socialImage, siteConfig.url).toString(),
-    author: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
+    image: `${siteConfig.url}/og/${article.imageKey}.png`,
+    author: organizationReference,
     publisher: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
+      ...organizationReference,
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/brand/logo.png`,
+      },
     },
+    isPartOf: { "@id": websiteId },
     about: {
       "@type": "Service",
       name: "Transport persoane si colete Romania - Europa",
@@ -261,11 +299,7 @@ export function getBlogJsonLd(
     inLanguage: "ro",
     description:
       "Ghiduri despre transport persoane si colete intre Romania si Europa: rute, acte, bagaje, tarife si sfaturi pentru diaspora.",
-    publisher: {
-      "@type": "Organization",
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
+    publisher: organizationReference,
     blogPost: posts.map((post) => ({
       "@type": "BlogPosting",
       headline: post.title,

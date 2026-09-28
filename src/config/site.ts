@@ -1,53 +1,163 @@
 export const destinationMarkets = [
   {
-    slug: "belgia",
-    country: "Belgia",
-    popularCities: ["Bruxelles", "Anvers", "Liege"],
-  },
-  {
     slug: "germania",
     country: "Germania",
+    code: "DE",
     popularCities: ["Berlin", "Frankfurt", "Munchen"],
+    cities: ["Berlin", "Frankfurt", "Munchen", "Stuttgart", "Nurnberg", "Koln", "Dusseldorf", "Hamburg"],
+    durationHint: "24-30 ore",
+    transit: "Ungaria, Austria",
+    intro:
+      "Germania este cea mai cautata destinatie pentru romanii din diaspora. Cursele acopera Bavaria, Baden-Wurttemberg, Hessa, Renania de Nord-Westfalia si zona Berlinului, cu preluare de la adresa din Romania si lasare direct la usa.",
+    highlights: [
+      "Cea mai deasa retea de opriri din toata Germania",
+      "Potrivita pentru mutari, contracte de munca si vizite de familie",
+      "Colete si bagaje voluminoase pe aceeasi cursa",
+    ],
+  },
+  {
+    slug: "belgia",
+    country: "Belgia",
+    code: "BE",
+    popularCities: ["Bruxelles", "Anvers", "Liege"],
+    cities: ["Bruxelles", "Anvers", "Liege", "Gent", "Bruges", "Charleroi", "Leuven", "Namur"],
+    durationHint: "28-34 ore",
+    transit: "Ungaria, Austria, Germania",
+    intro:
+      "Belgia este o tara compacta, cu comunitati romanesti mari in Bruxelles, Anvers si Liege. Distantele mici dintre orase permit deservirea mai multor adrese in aceeasi zi, atat in Flandra, cat si in Valonia.",
+    highlights: [
+      "Lasare in Bruxelles si in zonele cu acces restrictionat, stabilita cu soferul",
+      "Ideala pentru lucratorii din constructii, logistica si institutii europene",
+      "Colete in ambele sensuri, catre si dinspre Belgia",
+    ],
   },
   {
     slug: "franta",
     country: "Franta",
+    code: "FR",
     popularCities: ["Paris", "Lyon", "Strasbourg"],
-  },
-  {
-    slug: "danemarca",
-    country: "Danemarca",
-    popularCities: ["Copenhaga", "Aarhus", "Odense"],
+    cities: ["Paris", "Lyon", "Strasbourg", "Mulhouse", "Metz", "Nancy", "Dijon", "Reims"],
+    durationHint: "30-38 ore",
+    transit: "Ungaria, Austria, Germania",
+    intro:
+      "Franta are distante mari intre regiuni, asa ca planificarea traseului conteaza. Strasbourg si Alsacia sunt primele atinse, iar Parisul si Lyonul presupun kilometri suplimentari, confirmati la rezervare.",
+    highlights: [
+      "Traseu planificat pe adresa exacta, nu doar pe oras",
+      "Fara tren regional sau masina inchiriata dupa sosire",
+      "Informatii despre zonele cu restrictii de circulatie din Paris",
+    ],
   },
   {
     slug: "italia",
     country: "Italia",
+    code: "IT",
     popularCities: ["Milano", "Bologna", "Roma"],
-  },
-  {
-    slug: "luxemburg",
-    country: "Luxemburg",
-    popularCities: ["Luxemburg", "Esch-sur-Alzette", "Differdange"],
-  },
-  {
-    slug: "elvetia",
-    country: "Elvetia",
-    popularCities: ["Zurich", "Basel", "Geneva"],
+    cities: ["Milano", "Bologna", "Roma", "Torino", "Verona", "Padova", "Florenta", "Brescia"],
+    durationHint: "24-32 ore",
+    transit: "Ungaria, Slovenia sau Austria",
+    intro:
+      "Italia gazduieste una dintre cele mai mari comunitati romanesti din Europa, raspandita din Lombardia si Veneto pana in Lazio. Cererea este constanta tot anul, cu varfuri in august si decembrie.",
+    highlights: [
+      "Nordul Italiei se atinge mai repede decat Roma si centrul tarii",
+      "Spatiu generos pentru bagajele de la inceput sau final de contract",
+      "Colete cu produse traditionale, haine si documente",
+    ],
   },
   {
     slug: "olanda",
     country: "Olanda",
+    code: "NL",
     popularCities: ["Amsterdam", "Rotterdam", "Eindhoven"],
+    cities: ["Amsterdam", "Rotterdam", "Eindhoven", "Utrecht", "Haga", "Venlo", "Tilburg", "Breda"],
+    durationHint: "28-34 ore",
+    transit: "Ungaria, Austria, Germania",
+    intro:
+      "Olanda atrage lucratori din agricultura, sere, depozite si logistica, deseori in regim sezonier. Preluarea se poate organiza pe grupuri din aceeasi zona, cu lasare direct la cazarea de la destinatie.",
+    highlights: [
+      "Preluari de grup din aceeasi localitate sau zona",
+      "Lasare direct la adresa de cazare a angajatorului",
+      "Potrivita pentru inceputul si finalul de sezon",
+    ],
   },
   {
     slug: "austria",
     country: "Austria",
+    code: "AT",
     popularCities: ["Viena", "Linz", "Salzburg"],
+    cities: ["Viena", "Linz", "Salzburg", "Graz", "Wels", "St. Polten", "Innsbruck", "Klagenfurt"],
+    durationHint: "14-20 ore",
+    transit: "Ungaria",
+    intro:
+      "Austria este una dintre cele mai rapide destinatii vestice, iar Viena este deseori primul oras mare atins pe traseu. Frecventa curselor permite si rezervari pe termen scurt.",
+    highlights: [
+      "Una dintre cele mai scurte rute din retea",
+      "Disponibilitate frecventa si pentru plecari apropiate",
+      "Potrivita pentru tratamente medicale si vizite scurte",
+    ],
+  },
+  {
+    slug: "elvetia",
+    country: "Elvetia",
+    code: "CH",
+    popularCities: ["Zurich", "Basel", "Geneva"],
+    cities: ["Zurich", "Basel", "Geneva", "Berna", "Lausanne", "Lucerna", "St. Gallen", "Winterthur"],
+    durationHint: "28-34 ore",
+    transit: "Ungaria, Austria, Germania",
+    intro:
+      "Elvetia face parte din spatiul Schengen, dar nu din Uniunea Europeana, deci bunurile transportate pot fi verificate vamal. Declararea corecta a coletelor evita intarzierile la granita.",
+    highlights: [
+      "Informatii clare despre regulile vamale pentru bunuri",
+      "Basel si Zurich se ating mai repede decat Geneva",
+      "Colete declarate corect, fara surprize la frontiera",
+    ],
+  },
+  {
+    slug: "danemarca",
+    country: "Danemarca",
+    code: "DK",
+    popularCities: ["Copenhaga", "Aarhus", "Odense"],
+    cities: ["Copenhaga", "Aarhus", "Odense", "Aalborg", "Esbjerg", "Kolding", "Vejle", "Horsens"],
+    durationHint: "32-40 ore",
+    transit: "Ungaria, Austria sau Cehia, Germania",
+    intro:
+      "Danemarca este una dintre cele mai lungi rute din retea, cu traversarea intregii Germanii. Pentru o planificare exacta, codul postal al adresei de destinatie este foarte util la rezervare.",
+    highlights: [
+      "Pauze de odihna planificate pentru un drum lung",
+      "Acoperire pentru Zeelanda, Iutlanda si Fionia",
+      "Rezervare recomandata cu doua-trei saptamani inainte",
+    ],
+  },
+  {
+    slug: "luxemburg",
+    country: "Luxemburg",
+    code: "LU",
+    popularCities: ["Luxemburg", "Esch-sur-Alzette", "Differdange"],
+    cities: ["Luxemburg", "Esch-sur-Alzette", "Differdange", "Dudelange", "Ettelbruck", "Diekirch"],
+    durationHint: "28-34 ore",
+    transit: "Ungaria, Austria, Germania",
+    intro:
+      "Luxemburg este o tara mica, cu multi lucratori transfrontalieri si trafic intens la orele de varf. Aproape orice localitate se afla la mica distanta de traseul principal.",
+    highlights: [
+      "Aproape orice localitate poate fi deservita door-to-door",
+      "Traseu comun cu Belgia si estul Frantei",
+      "Colete catre familie si parteneri de afaceri",
+    ],
   },
   {
     slug: "ungaria",
     country: "Ungaria",
+    code: "HU",
     popularCities: ["Budapesta", "Gyor", "Debrecen"],
+    cities: ["Budapesta", "Debrecen", "Gyor", "Szeged", "Kecskemet", "Miskolc", "Nyiregyhaza", "Pecs"],
+    durationHint: "5-14 ore",
+    transit: "direct",
+    intro:
+      "Ungaria este cea mai scurta ruta din retea, cu timpi de raspuns rapizi si flexibilitate mare la programare. Este potrivita si pentru colete sau documente care trebuie sa ajunga repede.",
+    highlights: [
+      "Cea mai rapida destinatie din reteaua Mariva Travel",
+      "Rezervari si pentru zilele urmatoare, in functie de disponibilitate",
+      "Colete urgente si documente pentru familie sau afaceri",
+    ],
   },
 ] as const;
 
@@ -177,6 +287,11 @@ export const siteConfig = {
   fleetGallery,
   serviceVideos,
   socialImage: "/images/hero-coach.jpg",
+  /**
+   * Codul de verificare Google Search Console (metoda "Eticheta HTML").
+   * Lasa gol daca domeniul este verificat prin DNS.
+   */
+  googleSiteVerification: "",
 } as const;
 
 export type DestinationMarket = (typeof destinationMarkets)[number];
@@ -187,8 +302,14 @@ export function getDestinationMarketBySlug(
   return destinationMarkets.find((market) => market.slug === slug);
 }
 
-export function getRouteFaqItems(country: string) {
+export function getRouteFaqItems(market: DestinationMarket) {
+  const { country } = market;
+
   return [
+    {
+      question: `Cat dureaza transportul Romania - ${country}?`,
+      answer: `Orientativ ${market.durationHint} de la preluare, in functie de localitatea de plecare din Romania, destinatia finala si numarul de opriri din ziua respectiva. Traseul trece prin ${market.transit === "direct" ? "vama directa dintre cele doua tari" : market.transit}.`,
+    },
     {
       question: `Cum rezerv un loc pentru transport Romania - ${country}?`,
       answer:
@@ -196,18 +317,16 @@ export function getRouteFaqItems(country: string) {
     },
     {
       question: `Asigurati transport door-to-door catre ${country}?`,
-      answer:
-        `Da. Serviciul este orientat pe preluare de la adresa din Romania si lasare cat mai aproape de destinatia finala din ${country}, in functie de ruta stabilita.`,
+      answer: `Da. Preluam de la adresa din Romania si lasam cat mai aproape de destinatia finala din ${country}, inclusiv in orase precum ${market.cities.slice(0, 4).join(", ")}.`,
     },
     {
       question: `Pot trimite si colete pe ruta Romania - ${country}?`,
-      answer:
-        `Da, pe ruta Romania - ${country} putem prelua si colete, bagaje sau pachete, in limita capacitatii disponibile pe cursa.`,
+      answer: `Da, pe ruta Romania - ${country} preluam si colete, bagaje sau pachete, in limita capacitatii disponibile pe cursa.`,
     },
     {
       question: `Cand primesc pretul pentru ruta Romania - ${country}?`,
       answer:
-        "Tariful se comunica direct in functie de ruta exacta, adresa de preluare, destinatie si disponibilitatea din ziua solicitata.",
+        "Tariful se comunica direct, dupa ce trimiti ruta exacta: adresa de preluare, destinatia, data si numarul de persoane sau detaliile coletului.",
     },
-  ] as const;
+  ];
 }

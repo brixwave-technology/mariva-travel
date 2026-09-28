@@ -14,8 +14,10 @@ export type BlogSection = {
 export type BlogPost = {
   /** Slug folosit in URL: /blog/<slug>/ */
   slug: string;
-  /** H1 si title-ul paginii */
+  /** H1 al articolului */
   title: string;
+  /** Titlu scurt pentru Google (sub 60 caractere), cand H1 este prea lung */
+  seoTitle?: string;
   /** Meta description, ideal 140-165 caractere */
   description: string;
   /** Propozitie de intro afisata sub H1 si in listing */

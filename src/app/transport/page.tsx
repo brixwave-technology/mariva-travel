@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MobileCallBar } from "@/components/layout/mobile-call-bar";
-import { SiteHeader } from "@/components/layout/site-header";
 import { FaqSection } from "@/components/sections/faq-section";
+import { CtaBand } from "@/components/ui/cta-band";
+import { ArrowRightIcon, ClockIcon, MapPinIcon, PhoneIcon } from "@/components/ui/icons";
+import { JsonLd } from "@/components/ui/json-ld";
+import { PageHero } from "@/components/ui/page-hero";
 import { destinationMarkets, siteConfig } from "@/config/site";
 import { createPageMetadata } from "@/lib/seo";
 import {
   getBreadcrumbJsonLd,
   getFaqJsonLd,
+  getItemListJsonLd,
   getOrganizationJsonLd,
   getTransportServiceJsonLd,
 } from "@/lib/structured-data";
@@ -18,139 +21,112 @@ export function generateMetadata(): Metadata {
   return createPageMetadata({
     title: "Rute transport persoane si colete Romania - Europa",
     description:
-      "Descopera toate rutele Mariva Travel pentru transport persoane si colete door-to-door intre Romania si Belgia, Germania, Franta, Danemarca, Italia, Luxemburg, Elvetia, Olanda, Austria si Ungaria.",
+      "Transport persoane si colete door-to-door intre Romania si Germania, Belgia, Franta, Italia, Olanda, Austria, Elvetia, Danemarca, Luxemburg si Ungaria.",
     path: "/transport/",
+    image: "/og/transport.png",
     keywords: [
       "rute transport persoane Romania Europa",
       "transport colete Romania Europa",
-      "transport persoane Belgia Germania Franta",
+      "transport persoane Germania Belgia Italia",
       "transport international door to door",
     ],
   });
 }
 
 export default function TransportHubPage() {
-  const organizationJsonLd = getOrganizationJsonLd();
-  const transportServiceJsonLd = getTransportServiceJsonLd();
-  const faqJsonLd = getFaqJsonLd(siteConfig.faqItems);
-  const breadcrumbJsonLd = getBreadcrumbJsonLd([
-    { name: "Acasa", path: "/" },
-    { name: "Transport", path: "/transport/" },
-  ]);
-
   return (
-    <>
-      <SiteHeader currentPageLabel="Rute Internationale" />
+    <main>
+      <PageHero
+        breadcrumbs={[{ name: "Acasa", href: "/" }, { name: "Rute" }]}
+        eyebrow="Rute internationale"
+        title="Transport persoane si colete Romania - Europa"
+        lead={`${destinationMarkets.length} destinatii, un singur dispecerat. Alege tara ca sa vezi orasele deservite, durata orientativa si detaliile de rezervare.`}
+      >
+        <a href={`tel:${siteConfig.dispatchPhoneE164}`} className="btn btn-gold">
+          <PhoneIcon className="h-4 w-4" /> {siteConfig.dispatchPhoneDisplay}
+        </a>
+        <Link href="/transport-colete/" className="btn btn-ghost-light">
+          Transport colete
+        </Link>
+      </PageHero>
 
-      <main className="pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
-        <section className="bg-foreground py-20 text-white lg:py-28">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-              Rute Internationale
-            </span>
-            <h1
-              className="mt-4 max-w-4xl text-5xl font-light leading-tight tracking-tight lg:text-6xl"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              Transport persoane si colete Romania - Europa
-            </h1>
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-white/70">
-              Pagina reuneste toate rutele Mariva Travel pentru transport
-              persoane international si transport colete door-to-door, cu
-              plecari zilnice, rezervari rapide si preluare de la adresa.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href={`tel:${siteConfig.dispatchPhoneE164}`}
-                className="inline-flex h-12 items-center justify-center bg-accent px-6 text-sm font-semibold uppercase tracking-[0.16em] text-foreground transition-colors hover:bg-white"
+      <section className="section-y bg-background">
+        <div className="container-x">
+          <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {destinationMarkets.map((market, index) => (
+              <li
+                key={market.slug}
+                data-reveal
+                style={{ "--reveal-delay": `${(index % 3) * 70}ms` } as React.CSSProperties}
               >
-                Suna Acum
-              </a>
-              <Link
-                href="/#contact"
-                className="inline-flex h-12 items-center justify-center border border-white/20 px-6 text-sm font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:border-white hover:bg-white/10"
-              >
-                Contact Rapid
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-background py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {destinationMarkets.map((market) => (
-                <article key={market.slug} className="card-premium p-6 hover-lift">
-                  <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                    Ruta dedicata
-                  </span>
-                  <h2 className="mt-4 text-2xl font-medium text-foreground">
-                    Transport Romania - {market.country}
-                  </h2>
-                  <p className="mt-4 leading-7 text-muted">
-                    Pagina dedicata pentru clienti care cauta transport persoane
-                    si colete Romania - {market.country}, cu informatii despre
-                    rezervare, transport door-to-door si orase populare precum{" "}
-                    {market.popularCities.join(", ")}.
-                  </p>
-                  <div className="mt-6 flex flex-wrap gap-2">
-                    {market.popularCities.map((city) => (
-                      <span
-                        key={city}
-                        className="inline-flex border border-border bg-background px-3 py-1 text-xs font-medium uppercase tracking-[0.16em] text-muted"
-                      >
-                        {city}
-                      </span>
-                    ))}
+                <article className="card card-hover group relative flex h-full flex-col p-6 sm:p-7">
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-sm font-bold tracking-wider text-accent">
+                      {market.code}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-surface px-3 py-1 text-xs font-semibold text-accent-ink">
+                      <ClockIcon className="h-3.5 w-3.5" />~ {market.durationHint}
+                    </span>
                   </div>
-                  <Link
-                    href={`/transport/${market.slug}/`}
-                    className="mt-8 inline-flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground transition-colors hover:text-accent"
-                  >
-                    <span>Vezi pagina rutei</span>
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
+                  <h2 className="mt-6 text-xl font-semibold text-foreground">
+                    <Link
+                      href={`/transport/${market.slug}/`}
+                      className="after:absolute after:inset-0 after:rounded-[1.25rem] group-hover:text-accent-ink"
+                    >
+                      Transport Romania - {market.country}
+                    </Link>
+                  </h2>
+                  <p className="mt-3 flex-1 leading-7 text-muted">{market.intro}</p>
+                  <ul className="mt-5 flex flex-wrap gap-1.5">
+                    {market.popularCities.map((city) => (
+                      <li
+                        key={city}
+                        className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-xs text-foreground/80"
+                      >
+                        <MapPinIcon className="h-3 w-3 text-accent-ink" />
+                        {city}
+                      </li>
+                    ))}
+                  </ul>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-foreground">
+                    Detalii ruta
+                    <ArrowRightIcon className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </span>
                 </article>
-              ))}
-            </div>
-          </div>
-        </section>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
-        <FaqSection
-          title="Intrebari frecvente despre rutele internationale"
-          intro="Daca vrei sa stii cum rezervi rapid, daca poti trimite colete sau cum functioneaza preluarea de la adresa, ai mai jos raspunsurile de baza."
-          items={siteConfig.faqItems}
-        />
-      </main>
+      <FaqSection
+        className="bg-surface/60"
+        title="Intrebari frecvente despre rute"
+        intro="Cum rezervi rapid, daca poti trimite colete sau cum functioneaza preluarea de la adresa: raspunsurile de baza."
+        items={siteConfig.faqItems}
+      />
 
-      <MobileCallBar />
+      <div className="pt-20 lg:pt-28">
+        <CtaBand />
+      </div>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationJsonLd),
-        }}
+      <JsonLd
+        data={[
+          getOrganizationJsonLd(),
+          getTransportServiceJsonLd(),
+          getItemListJsonLd(
+            destinationMarkets.map((market) => ({
+              name: `Transport Romania - ${market.country}`,
+              path: `/transport/${market.slug}/` as const,
+            })),
+          ),
+          getFaqJsonLd(siteConfig.faqItems),
+          getBreadcrumbJsonLd([
+            { name: "Acasa", path: "/" },
+            { name: "Transport", path: "/transport/" },
+          ]),
+        ]}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(transportServiceJsonLd),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqJsonLd),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd),
-        }}
-      />
-    </>
+    </main>
   );
 }

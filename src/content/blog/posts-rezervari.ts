@@ -3,6 +3,7 @@ import type { BlogPost } from "./types";
 export const rezervariPosts: BlogPost[] = [
   {
     slug: "cat-costa-transportul-de-persoane-romania-europa",
+    seoTitle: "Cat costa transportul de persoane Romania - Europa",
     title: "Cat costa transportul de persoane Romania - Europa si de ce nu exista un pret fix",
     description:
       "Afla ce influenteaza tariful unei curse internationale de persoane si cum obtii rapid o oferta corecta pentru ruta ta.",
@@ -221,6 +222,7 @@ export const rezervariPosts: BlogPost[] = [
   },
   {
     slug: "cand-sa-rezervi-transport-pentru-sarbatori",
+    seoTitle: "Cand sa rezervi transportul de sarbatori",
     title: "Cand sa rezervi transportul pentru sarbatori si perioade aglomerate",
     description:
       "Ghid despre perioadele aglomerate din transportul international de persoane si cand trebuie sa rezervi ca sa prinzi loc.",

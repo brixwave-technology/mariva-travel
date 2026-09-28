@@ -7,6 +7,17 @@ type CreatePageMetadataInput = {
   path: `/${string}` | "/";
   keywords?: string[];
   noIndex?: boolean;
+  /** Imaginea Open Graph generata pentru pagina, ex. /og/home.png */
+  image?: `/${string}`;
+  imageAlt?: string;
+  /** Titlul complet, fara sufixul " | Mariva Travel" */
+  absoluteTitle?: boolean;
+  article?: {
+    publishedTime: string;
+    modifiedTime: string;
+    section: string;
+    tags: string[];
+  };
 };
 
 const robotsDirectives = {
@@ -21,10 +32,17 @@ const robotsDirectives = {
   },
 } as const;
 
+const rssAlternate = {
+  "application/rss+xml": [{ url: "/blog/rss.xml", title: `Ghiduri ${siteConfig.name}` }],
+};
+
+const defaultTitle = "Transport persoane si colete Romania - Europa | Mariva Travel";
+const defaultImage = "/og/home.png";
+
 export const defaultMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Transport persoane si colete Romania - Europa, door-to-door zilnic",
+    default: defaultTitle,
     template: `%s | ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -32,9 +50,18 @@ export const defaultMetadata: Metadata = {
   manifest: "/manifest.webmanifest",
   category: "transport",
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
-    apple: "/favicon.ico",
+    icon: [
+      { url: "/brand/favicon-48.png", type: "image/png", sizes: "48x48" },
+      { url: "/brand/icon-192.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [{ url: "/brand/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  creator: siteConfig.name,
+  publisher: siteConfig.legalName,
+  formatDetection: {
+    telephone: true,
+    email: false,
+    address: false,
   },
   keywords: [
     "transport persoane Romania Europa",
@@ -43,10 +70,9 @@ export const defaultMetadata: Metadata = {
     "transport door to door Romania Europa",
     "transport persoane Germania Romania",
     "transport persoane Belgia Romania",
-    "transport persoane Franta Romania",
-    "curse zilnice Romania Europa",
-    "transport la adresa Europa",
-    "rezervari transport WhatsApp",
+    "transport persoane Italia Romania",
+    "microbuz Romania Europa",
+    "curse Romania Europa",
     "Mariva Travel",
   ],
   alternates: {
@@ -54,28 +80,34 @@ export const defaultMetadata: Metadata = {
     languages: {
       "ro-RO": "/",
     },
+    types: rssAlternate,
   },
   openGraph: {
     type: "website",
     locale: siteConfig.locale,
     siteName: siteConfig.name,
-    title: "Transport persoane si colete Romania - Europa, door-to-door zilnic",
+    title: defaultTitle,
     description: siteConfig.description,
     url: siteConfig.url,
     images: [
       {
-        url: siteConfig.socialImage,
-        alt: "Mariva Travel - transport persoane si colete door-to-door Romania Europa",
+        url: defaultImage,
+        width: 1200,
+        height: 630,
+        alt: "Mariva Travel - transport persoane si colete door-to-door Romania - Europa",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Transport persoane si colete Romania - Europa, door-to-door zilnic",
+    title: defaultTitle,
     description: siteConfig.description,
-    images: [siteConfig.socialImage],
+    images: [defaultImage],
   },
   robots: robotsDirectives,
+  ...(siteConfig.googleSiteVerification
+    ? { verification: { google: siteConfig.googleSiteVerification } }
+    : {}),
 };
 
 export function createPageMetadata({
@@ -84,38 +116,65 @@ export function createPageMetadata({
   path,
   keywords,
   noIndex = false,
+  image = defaultImage,
+  imageAlt,
+  absoluteTitle = false,
+  article,
 }: CreatePageMetadataInput): Metadata {
   const canonicalUrl = new URL(path, siteConfig.url).toString();
+  const socialTitle = absoluteTitle ? title : `${title} | ${siteConfig.name}`;
+  const images = [
+    {
+      url: image,
+      width: 1200,
+      height: 630,
+      alt: imageAlt ?? `${siteConfig.name} - ${title}`,
+    },
+  ];
 
   return {
-    title,
+    title: absoluteTitle ? { absolute: title } : title,
     description,
     keywords,
     alternates: {
       canonical: canonicalUrl,
+      languages: {
+        "ro-RO": canonicalUrl,
+      },
+      types: rssAlternate,
     },
-    openGraph: {
-      title,
-      description,
-      url: canonicalUrl,
-      locale: siteConfig.locale,
-      siteName: siteConfig.name,
-      type: "website",
-      images: [
-        {
-          url: siteConfig.socialImage,
-          alt: `${siteConfig.name} - ${title}`,
+    openGraph: article
+      ? {
+          type: "article",
+          title: socialTitle,
+          description,
+          url: canonicalUrl,
+          locale: siteConfig.locale,
+          siteName: siteConfig.name,
+          images,
+          publishedTime: article.publishedTime,
+          modifiedTime: article.modifiedTime,
+          section: article.section,
+          tags: article.tags,
+          authors: [siteConfig.url],
+        }
+      : {
+          type: "website",
+          title: socialTitle,
+          description,
+          url: canonicalUrl,
+          locale: siteConfig.locale,
+          siteName: siteConfig.name,
+          images,
         },
-      ],
-    },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle,
       description,
-      images: [siteConfig.socialImage],
+      images: [image],
     },
     robots: noIndex
-      ? { index: false, follow: false }
+      ? { index: false, follow: true }
       : { index: true, follow: true, googleBot: robotsDirectives.googleBot },
   };
 }

@@ -3,6 +3,7 @@ import type { BlogPost } from "./types";
 export const sfaturiPosts: BlogPost[] = [
   {
     slug: "ce-acte-iti-trebuie-pentru-transport-international",
+    seoTitle: "Ce acte iti trebuie pentru o cursa in Europa",
     title: "Ce acte iti trebuie pentru o cursa internationala din Romania in Europa",
     description:
       "Lista completa de acte necesare pentru transportul international de persoane: adulti, minori, animale de companie si situatii speciale.",
@@ -153,6 +154,7 @@ export const sfaturiPosts: BlogPost[] = [
   },
   {
     slug: "calatorie-cu-copii-in-microbuz-spre-europa",
+    seoTitle: "Calatorie cu copii in microbuz spre Europa: sfaturi",
     title: "Calatorie cu copii in microbuz spre Europa: cum faci drumul suportabil",
     description:
       "Sfaturi practice pentru calatoria cu copii pe rute lungi din Romania in Europa: pregatire, bagaj, pauze, alimentatie si divertisment.",
@@ -395,6 +397,7 @@ export const sfaturiPosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-cu-animale-de-companie-in-europa",
+    seoTitle: "Calatorie cu animale de companie in Europa: acte",
     title: "Transport persoane cu animale de companie in Europa: conditii si pregatire",
     description:
       "Ce documente si ce pregatire sunt necesare pentru a calatori cu animalul de companie pe o ruta internationala din Romania in Europa.",
@@ -469,6 +472,7 @@ export const sfaturiPosts: BlogPost[] = [
   },
   {
     slug: "calatorie-iarna-romania-europa-sfaturi",
+    seoTitle: "Calatorie iarna Romania - Europa: sfaturi practice",
     title: "Calatorie iarna intre Romania si Europa: la ce sa te astepti si cum te pregatesti",
     description:
       "Sfaturi pentru cursele internationale pe timp de iarna: intarzieri posibile, imbracaminte, sanatate si organizarea bagajului.",
@@ -537,6 +541,7 @@ export const sfaturiPosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-varstnice-si-cu-mobilitate-redusa",
+    seoTitle: "Transport pentru varstnici si mobilitate redusa",
     title: "Transport pentru persoane varstnice sau cu mobilitate redusa: ce trebuie stabilit inainte",
     description:
       "Cum organizezi o cursa internationala pentru o persoana varstnica sau cu mobilitate redusa: detalii de comunicat, pregatire si confort pe drum.",

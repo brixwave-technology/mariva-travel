@@ -1,69 +1,108 @@
+import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  CheckIcon,
+  PackageIcon,
+  UsersIcon,
+  WhatsAppIcon,
+} from "@/components/ui/icons";
+import { SectionHeading } from "@/components/ui/section-heading";
 
 export function ServiceHighlightsSection() {
   return (
-    <section id="servicii" className="bg-background py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
-          <div>
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-              Servicii Door-to-Door
-            </span>
-            <h2
-              className="mt-4 text-4xl font-light leading-tight tracking-tight text-foreground lg:text-5xl"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              Transport international pentru persoane si colete,
-              <span className="block">fara batai de cap</span>
-            </h2>
-            <div className="mt-6 h-px w-20 bg-accent" />
-            <p className="mt-8 max-w-2xl text-lg leading-relaxed text-muted">
-              Mariva Travel este alegerea potrivita daca vrei transport persoane
-              Romania - Europa cu preluare de la adresa, comunicare rapida si
-              trasee gandite pentru confort, punctualitate si flexibilitate.
-            </p>
-          </div>
+    <section id="servicii" className="section-y bg-background">
+      <div className="container-x">
+        <SectionHeading
+          eyebrow="Servicii door-to-door"
+          title="Un singur contact, de la usa ta pana la destinatie"
+          text="Transport international pentru persoane si colete, gandit pentru drum lung: preluare de la adresa, comunicare directa cu dispeceratul si trasee planificate pe adresele reale."
+        />
 
-          <div className="border border-border bg-card p-8">
-            <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-              Ce te ajuta concret
+        <div className="mt-14 grid gap-5 lg:grid-cols-2">
+          <article data-reveal className="card card-hover relative overflow-hidden p-7 lg:p-9">
+            <span className="icon-badge">
+              <UsersIcon className="h-5 w-5" />
+            </span>
+            <h3 className="heading-md mt-6">Transport persoane door-to-door</h3>
+            <p className="mt-4 max-w-lg leading-7 text-muted">
+              Preluare din fata casei si lasare la adresa, fara schimbari de tren, autocar sau
+              curse complicate. Potrivit pentru munca, vizite in familie, mutari si reveniri acasa.
             </p>
-            <ul className="mt-6 flex flex-col gap-4">
+            <ul className="mt-7 grid gap-3 sm:grid-cols-2">
               {siteConfig.serviceBenefits.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 text-foreground">
-                  <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+                <li key={benefit} className="flex items-start gap-3 text-[0.95rem] text-foreground">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent-ink">
+                    <CheckIcon className="h-3 w-3" strokeWidth={3} />
                   </span>
-                  <span className="leading-7">{benefit}</span>
+                  {benefit}
                 </li>
               ))}
             </ul>
-          </div>
-        </div>
-
-        <div className="mt-16 grid gap-6 lg:grid-cols-4">
-          {siteConfig.serviceHighlights.map((highlight, index) => (
-            <article
-              key={highlight.title}
-              className="card-premium p-6 hover-lift"
-              style={{ animationDelay: `${index * 80}ms` }}
+            <Link
+              href="/transport/"
+              className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-foreground hover:text-accent-ink"
             >
-              <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                0{index + 1}
-              </span>
-              <h3 className="mt-4 text-xl font-medium text-foreground">
-                {highlight.title}
-              </h3>
-              <p className="mt-3 leading-7 text-muted">{highlight.description}</p>
+              Vezi toate rutele <ArrowRightIcon className="h-4 w-4" />
+            </Link>
+          </article>
+
+          <div className="flex flex-col gap-5">
+            <article
+              data-reveal
+              style={{ "--reveal-delay": "80ms" } as React.CSSProperties}
+              className="bg-ink-gradient relative flex-1 overflow-hidden rounded-[1.25rem] p-7 text-white"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <span className="icon-badge">
+                  <PackageIcon className="h-5 w-5" />
+                </span>
+                <Link
+                  href="/transport-colete/"
+                  aria-label="Detalii transport colete"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 transition-colors hover:border-accent hover:text-accent"
+                >
+                  <ArrowRightIcon className="h-4 w-4" />
+                </Link>
+              </div>
+              <h3 className="mt-5 font-display text-2xl">Transport colete Romania - Europa</h3>
+              <p className="mt-3 leading-7 text-white/65">
+                Colete, bagaje si pachete pentru familie sau business, preluate si livrate la adresa
+                pe aceleasi rute internationale.
+              </p>
             </article>
-          ))}
+
+            <div className="grid gap-5 sm:grid-cols-2">
+              <article
+                data-reveal
+                style={{ "--reveal-delay": "140ms" } as React.CSSProperties}
+                className="card card-hover p-7"
+              >
+                <span className="icon-badge h-11 w-11">
+                  <CalendarIcon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-5 text-lg font-semibold">Plecari regulate</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">
+                  Program flexibil, adaptat rutei tale, cu confirmare rapida a zilei de plecare.
+                </p>
+              </article>
+
+              <article
+                data-reveal
+                style={{ "--reveal-delay": "200ms" } as React.CSSProperties}
+                className="card card-hover p-7"
+              >
+                <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-whatsapp/15 text-whatsapp">
+                  <WhatsAppIcon className="h-5 w-5" />
+                </span>
+                <h3 className="mt-5 text-lg font-semibold">Rezervare pe telefon sau WhatsApp</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">
+                  Raspuns direct din dispecerat, fara cont si fara formulare complicate.
+                </p>
+              </article>
+            </div>
+          </div>
         </div>
       </div>
     </section>

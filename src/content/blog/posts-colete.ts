@@ -3,6 +3,7 @@ import type { BlogPost } from "./types";
 export const coletePosts: BlogPost[] = [
   {
     slug: "cum-trimiti-un-colet-din-romania-in-europa",
+    seoTitle: "Cum trimiti un colet din Romania in Europa: pasi simpli",
     title: "Cum trimiti un colet din Romania in Europa: pasii de la ambalare la livrare",
     description:
       "Ghid pas cu pas pentru trimiterea unui colet din Romania in Europa: ce pregatesti, cum ambalezi, ce informatii trimiti si cat dureaza livrarea.",
@@ -85,6 +86,7 @@ export const coletePosts: BlogPost[] = [
   },
   {
     slug: "ce-nu-poti-trimite-prin-colet-international",
+    seoTitle: "Ce nu poti trimite prin colet international: lista",
     title: "Ce nu poti trimite prin colet international: lista de bunuri interzise si restrictionate",
     description:
       "Afla ce nu ai voie sa trimiti intr-un colet international din Romania in Europa si ce bunuri sunt restrictionate sau necesita documente suplimentare.",
@@ -240,6 +242,7 @@ export const coletePosts: BlogPost[] = [
   },
   {
     slug: "transport-colete-cu-microbuzul-vs-curier-international",
+    seoTitle: "Colete cu microbuzul sau curier international?",
     title: "Transport colete cu microbuzul sau curier international: care varianta ti se potriveste",
     description:
       "Comparatie intre transportul de colete cu microbuzul si curieratul international clasic: cost, timp, dimensiuni acceptate si flexibilitate.",
@@ -313,6 +316,7 @@ export const coletePosts: BlogPost[] = [
   },
   {
     slug: "cat-dureaza-un-colet-din-romania-in-germania",
+    seoTitle: "Cat dureaza un colet din Romania in Germania",
     title: "Cat dureaza un colet din Romania in Germania si de ce difera termenele",
     description:
       "Afla cat dureaza livrarea unui colet din Romania in Germania, ce influenteaza termenul si cum poti scurta timpul de livrare.",
@@ -382,6 +386,7 @@ export const coletePosts: BlogPost[] = [
   },
   {
     slug: "trimitere-colete-pentru-sarbatori-in-europa",
+    seoTitle: "Colete de sarbatori in Europa: cand si cum trimiti",
     title: "Trimitere colete pentru sarbatori in Europa: cum eviti intarzierile de sezon",
     description:
       "Ghid pentru trimiterea coletelor de sarbatori catre familia din Europa: cand rezervi, ce trimiti si cum eviti aglomeratia de decembrie.",

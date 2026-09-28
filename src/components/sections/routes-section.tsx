@@ -1,152 +1,108 @@
 import Image from "next/image";
 import Link from "next/link";
-import { siteConfig } from "@/config/site";
+import { destinationMarkets } from "@/config/site";
+import { ArrowRightIcon, ClockIcon } from "@/components/ui/icons";
+import { SectionHeading } from "@/components/ui/section-heading";
 
 const processSteps = [
   {
-    number: "01",
-    title: "Contacteaza-ne",
-    description: "Suna sau scrie pe WhatsApp cu ruta, data, localitatea de plecare si destinatia.",
+    title: "Trimiti ruta",
+    description:
+      "Suni sau scrii pe WhatsApp cu localitatea de plecare, destinatia, data si numarul de persoane sau detaliile coletului.",
   },
   {
-    number: "02", 
-    title: "Primesti Confirmare",
-    description: "Primesti raspuns rapid privind disponibilitatea, programul si tariful corect pentru cursa ta.",
+    title: "Primesti confirmarea",
+    description:
+      "Dispeceratul revine rapid cu disponibilitatea, intervalul de preluare si tariful pentru ruta exacta.",
   },
   {
-    number: "03",
-    title: "Preluare si Livrare",
-    description: "Te preluam de la adresa si te lasam cat mai aproape de destinatia finala, inclusiv pentru colete.",
+    title: "Te preluam de acasa",
+    description:
+      "Soferul vine la adresa ta si te lasa cat mai aproape de destinatia finala. La fel si pentru colete.",
   },
 ] as const;
 
 export function RoutesSection() {
   return (
-    <section id="rute" className="bg-background py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-20">
-          <div>
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-              Rute Internationale
-            </span>
-            <h2 
-              className="mt-4 text-4xl font-light leading-tight tracking-tight text-foreground lg:text-5xl"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              Romania conectata zilnic
-              <span className="block">cu 10 tari din Europa</span>
-            </h2>
-            <div className="mt-6 h-px w-20 bg-accent" />
-          </div>
-          <div className="flex items-end">
-            <p className="text-lg leading-relaxed text-muted">
-              Operam transport persoane si colete pe rutele Romania - Belgia,
-              Germania, Franta, Danemarca, Italia, Luxemburg, Elvetia, Olanda,
-              Austria si Ungaria, cu preluare de la adresa si asistenta rapida
-              pentru rezervari.
-            </p>
-          </div>
-        </div>
+    <section id="rute" className="section-y bg-surface/60">
+      <div className="container-x">
+        <SectionHeading
+          eyebrow="Rute internationale"
+          title={`Romania conectata cu ${destinationMarkets.length} tari din Europa`}
+          text="Alege destinatia ca sa vezi orasele deservite, durata orientativa a cursei si raspunsurile la cele mai frecvente intrebari pentru ruta respectiva."
+        />
 
-        {/* Routes Grid */}
-        <div className="mt-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {siteConfig.destinationMarkets.map((market, index) => (
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {destinationMarkets.map((market, index) => (
             <Link
               key={market.slug}
               href={`/transport/${market.slug}/`}
-              className="group card-premium flex items-center justify-between p-5 hover-lift"
-              style={{ animationDelay: `${index * 50}ms` }}
+              data-reveal
+              style={{ "--reveal-delay": `${(index % 5) * 60}ms` } as React.CSSProperties}
+              className="card card-hover group flex flex-col p-5"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background text-sm font-medium text-muted">
-                  {market.country.slice(0, 2).toUpperCase()}
-                </div>
-                <span className="font-medium text-foreground">{market.country}</span>
+              <div className="flex items-center justify-between">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-xs font-bold tracking-wider text-accent transition-transform duration-300 group-hover:scale-105">
+                  {market.code}
+                </span>
+                <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-muted transition-all duration-300 group-hover:border-ink group-hover:bg-ink group-hover:text-white">
+                  <ArrowRightIcon className="h-4 w-4" />
+                </span>
               </div>
-              <svg 
-                className="h-4 w-4 text-muted transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
+              <h3 className="mt-5 text-lg font-semibold text-foreground">
+                Romania - {market.country}
+              </h3>
+              <p className="mt-1.5 text-sm text-muted">{market.popularCities.join(", ")}</p>
+              <p className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-accent-ink">
+                <ClockIcon className="h-3.5 w-3.5" />~ {market.durationHint}
+              </p>
             </Link>
           ))}
         </div>
 
-        <div className="mt-8 flex justify-end">
-          <Link
-            href="/transport/"
-            className="inline-flex items-center gap-3 border border-border px-5 py-3 text-sm font-semibold uppercase tracking-[0.16em] text-foreground transition-colors hover:border-accent hover:text-accent"
-          >
-            <span>Vezi toate paginile de ruta</span>
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
-          </Link>
-        </div>
-
-        {/* Map & Process Section */}
-        <div className="mt-24 grid gap-12 lg:grid-cols-2 lg:gap-16">
-          {/* Map Image */}
-          <div className="relative overflow-hidden rounded-sm">
-            <div className="relative aspect-[4/3]">
+        <div className="mt-20 grid gap-10 lg:mt-28 lg:grid-cols-2 lg:gap-16">
+          <div data-reveal className="relative overflow-hidden rounded-[1.75rem]">
+            <div className="relative aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[28rem]">
               <Image
                 src="/images/europe-routes.jpg"
-                alt="Harta rutelor Mariva Travel in Europa"
+                alt="Harta rutelor Mariva Travel intre Romania si Europa"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                loading="eager"
                 className="object-cover"
               />
-              <div className="absolute inset-0 image-overlay-subtle" />
+              <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/20 to-transparent" />
             </div>
-            <div className="absolute bottom-6 left-6 right-6">
-              <p className="text-sm font-medium uppercase tracking-wider text-white/80">
-                Transport Persoane si Colete
-              </p>
-              <p className="mt-1 text-2xl font-light text-white" style={{ fontFamily: "var(--font-playfair)" }}>
-                Preluare de la adresa, livrare la destinatie
+            <div className="absolute inset-x-6 bottom-6 text-white sm:inset-x-8 sm:bottom-8">
+              <p className="eyebrow eyebrow-light">Door-to-door</p>
+              <p className="mt-3 font-display text-2xl sm:text-3xl">
+                De la usa ta din Romania, pana la adresa din Europa
               </p>
             </div>
           </div>
 
-          {/* Process Steps */}
-          <div className="flex flex-col justify-center">
-            <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-              Cum Functioneaza
-            </span>
-            <h3 
-              className="mt-4 text-3xl font-light tracking-tight text-foreground"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              Oferta si rezervare simpla in 3 pasi
-            </h3>
-            
-            <div className="mt-10 flex flex-col gap-8">
-              {processSteps.map((step, index) => (
-                <div key={step.number} className="group flex gap-6">
-                  <div className="flex flex-col items-center">
-                    <span className="flex h-12 w-12 items-center justify-center border border-border text-lg font-light text-muted transition-colors group-hover:border-accent group-hover:text-accent">
-                      {step.number}
-                    </span>
-                    {index < processSteps.length - 1 && (
-                      <div className="mt-2 h-full w-px bg-border" />
-                    )}
-                  </div>
-                  <div className="pb-8">
-                    <h4 className="text-lg font-medium text-foreground">
-                      {step.title}
-                    </h4>
-                    <p className="mt-2 text-muted">
-                      {step.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
+          <div id="cum-functioneaza" className="flex flex-col justify-center">
+            <div data-reveal>
+              <p className="eyebrow">Cum functioneaza</p>
+              <h3 className="heading-lg mt-4">Rezervare simpla, in 3 pasi</h3>
             </div>
+            <ol className="relative mt-10 flex flex-col gap-4">
+              {processSteps.map((step, index) => (
+                <li
+                  key={step.title}
+                  data-reveal
+                  style={{ "--reveal-delay": `${index * 90}ms` } as React.CSSProperties}
+                  className="card group flex gap-5 p-5 sm:p-6"
+                >
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ink font-display text-lg text-accent transition-transform duration-300 group-hover:-rotate-6">
+                    {index + 1}
+                  </span>
+                  <div>
+                    <h4 className="text-lg font-semibold text-foreground">{step.title}</h4>
+                    <p className="mt-1.5 leading-7 text-muted">{step.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import type { BlogPost } from "./types";
 export const rutePosts: BlogPost[] = [
   {
     slug: "transport-persoane-romania-germania-ghid-complet",
+    seoTitle: "Transport persoane Romania - Germania: ghid complet",
     title: "Transport persoane Romania - Germania: ghid complet pentru cursa ta",
     description:
       "Tot ce trebuie sa stii despre transportul de persoane Romania - Germania: orase deservite, durata cursei, acte, bagaje si cum rezervi rapid un loc.",
@@ -90,6 +91,7 @@ export const rutePosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-romania-belgia-ghid-complet",
+    seoTitle: "Transport persoane Romania - Belgia: Bruxelles, Anvers",
     title: "Transport persoane Romania - Belgia: cum ajungi la Bruxelles, Anvers sau Liege",
     description:
       "Ghid practic pentru transportul de persoane Romania - Belgia: orase deservite, durata cursei, acte necesare, bagaje si rezervare rapida door-to-door.",
@@ -171,6 +173,7 @@ export const rutePosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-romania-franta-ghid-complet",
+    seoTitle: "Transport persoane Romania - Franta: Paris, Lyon",
     title: "Transport persoane Romania - Franta: Paris, Lyon si Strasbourg door-to-door",
     description:
       "Ghid despre transportul de persoane Romania - Franta: orase deservite, durata cursei, acte, bagaje si cum rezervi un loc cu preluare de la adresa.",
@@ -252,6 +255,7 @@ export const rutePosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-romania-italia-ghid-complet",
+    seoTitle: "Transport persoane Romania - Italia: Milano, Roma",
     title: "Transport persoane Romania - Italia: Milano, Bologna si Roma fara transferuri",
     description:
       "Ghid despre transportul de persoane Romania - Italia: orase deservite, durata cursei, bagaje, colete si rezervare door-to-door rapida.",
@@ -333,6 +337,7 @@ export const rutePosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-romania-olanda-ghid-complet",
+    seoTitle: "Transport persoane Romania - Olanda: Amsterdam",
     title: "Transport persoane Romania - Olanda: Amsterdam, Rotterdam si Eindhoven",
     description:
       "Ghid pentru transportul de persoane Romania - Olanda: orase deservite, durata cursei, acte necesare si rezervare door-to-door pe telefon sau WhatsApp.",
@@ -565,6 +570,7 @@ export const rutePosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-romania-danemarca-ghid-complet",
+    seoTitle: "Transport persoane Romania - Danemarca: Copenhaga",
     title: "Transport persoane Romania - Danemarca: Copenhaga, Aarhus si Odense",
     description:
       "Ghid pentru transportul de persoane Romania - Danemarca: durata cursei, orase deservite, pregatirea bagajelor si rezervare door-to-door.",
@@ -644,6 +650,7 @@ export const rutePosts: BlogPost[] = [
   },
   {
     slug: "transport-persoane-romania-luxemburg-ghid-complet",
+    seoTitle: "Transport persoane Romania - Luxemburg: ghid",
     title: "Transport persoane Romania - Luxemburg: ghid pentru o tara mica, dar aglomerata",
     description:
       "Ghid pentru transportul de persoane Romania - Luxemburg: orase deservite, durata cursei, acte necesare si rezervare door-to-door rapida.",
