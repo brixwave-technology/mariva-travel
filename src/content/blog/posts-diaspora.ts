@@ -3,6 +3,7 @@ import type { BlogPost } from "./types";
 export const diasporaPosts: BlogPost[] = [
   {
     slug: "ghid-pentru-romanii-care-se-muta-in-germania",
+    seoTitle: "Mutare in Germania: ghid pentru romani, pas cu pas",
     title: "Ghid pentru romanii care se muta in Germania: primele luni, pas cu pas",
     description:
       "Ce trebuie sa stii cand te muti in Germania: inregistrarea la adresa, documentele, transportul bagajelor si legatura cu Romania.",
@@ -89,6 +90,7 @@ export const diasporaPosts: BlogPost[] = [
   },
   {
     slug: "ghid-pentru-romanii-din-belgia-bruxelles-si-imprejurimi",
+    seoTitle: "Ghid pentru romanii din Belgia: Bruxelles, Anvers",
     title: "Ghid pentru romanii din Belgia: Bruxelles, Anvers si legatura cu tara",
     description:
       "Ce trebuie sa stie romanii stabiliti in Belgia: formalitati de baza, particularitati locale si cum mentin legatura logistica cu Romania.",

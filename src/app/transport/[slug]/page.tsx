@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MobileCallBar } from "@/components/layout/mobile-call-bar";
-import { SiteHeader } from "@/components/layout/site-header";
+import { PostCard } from "@/components/blog/post-card";
 import { FaqSection } from "@/components/sections/faq-section";
+import { QuoteWidget } from "@/components/sections/quote-widget";
+import { CtaBand } from "@/components/ui/cta-band";
 import {
+  ArrowRightIcon,
+  CheckIcon,
+  ClockIcon,
+  MapPinIcon,
+  PackageIcon,
+  RouteIcon,
+} from "@/components/ui/icons";
+import { JsonLd } from "@/components/ui/json-ld";
+import { PageHero } from "@/components/ui/page-hero";
+import {
+  destinationMarkets,
   getDestinationMarketBySlug,
   getRouteFaqItems,
   siteConfig,
 } from "@/config/site";
+import { blogPosts } from "@/content/blog";
 import { createPageMetadata } from "@/lib/seo";
 import {
   getBreadcrumbJsonLd,
@@ -18,23 +31,17 @@ import {
 } from "@/lib/structured-data";
 
 type RoutePageProps = {
-  params: Promise<{
-    slug: string;
-  }>;
+  params: Promise<{ slug: string }>;
 };
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return siteConfig.destinationMarkets.map((market) => ({
-    slug: market.slug,
-  }));
+  return destinationMarkets.map((market) => ({ slug: market.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: RoutePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: RoutePageProps): Promise<Metadata> {
   const { slug } = await params;
   const market = getDestinationMarketBySlug(slug);
 
@@ -49,13 +56,15 @@ export async function generateMetadata({
 
   return createPageMetadata({
     title: `Transport persoane si colete Romania - ${market.country}`,
-    description: `${siteConfig.name} ofera transport persoane si colete door-to-door pe ruta Romania - ${market.country}, cu plecari zilnice, rezervari rapide si preluare de la adresa pentru orase precum ${market.popularCities.join(", ")}.`,
+    description: `Transport persoane si colete Romania - ${market.country}, door-to-door: ${market.popularCities.join(", ")}. Durata ~${market.durationHint}, preluare de la adresa, oferta pe WhatsApp.`,
     path: `/transport/${market.slug}/`,
+    image: `/og/ruta-${market.slug}.png`,
     keywords: [
       `transport persoane Romania ${market.country}`,
       `transport colete Romania ${market.country}`,
-      `${market.country} Romania transport door to door`,
+      `microbuz Romania ${market.country}`,
       `curse Romania ${market.country}`,
+      ...market.popularCities.map((city) => `transport Romania ${city}`),
     ],
   });
 }
@@ -68,256 +77,208 @@ export default async function TransportRoutePage({ params }: RoutePageProps) {
     notFound();
   }
 
-  const faqItems = getRouteFaqItems(market.country);
-  const organizationJsonLd = getOrganizationJsonLd();
-  const routeServiceJsonLd = getRouteServiceJsonLd(market);
-  const faqJsonLd = getFaqJsonLd(faqItems);
-  const breadcrumbJsonLd = getBreadcrumbJsonLd([
-    { name: "Acasa", path: "/" },
-    { name: "Transport", path: "/transport/" },
-    { name: market.country, path: `/transport/${market.slug}/` },
-  ]);
+  const faqItems = getRouteFaqItems(market);
+  const relatedPosts = [
+    ...blogPosts.filter((post) => post.category === "rute" && post.relatedRouteSlugs[0] === market.slug),
+    ...blogPosts.filter(
+      (post) =>
+        !(post.category === "rute" && post.relatedRouteSlugs[0] === market.slug) &&
+        post.relatedRouteSlugs.includes(market.slug),
+    ),
+  ].slice(0, 3);
+  const otherMarkets = destinationMarkets.filter((item) => item.slug !== market.slug);
+  const whatsappMessage = `Buna ziua! Doresc o oferta pentru transport pe ruta Romania - ${market.country}.`;
+
+  const facts = [
+    { icon: ClockIcon, label: "Durata orientativa", value: market.durationHint },
+    {
+      icon: RouteIcon,
+      label: "Traseu prin",
+      value: market.transit === "direct" ? "Granita directa" : market.transit,
+    },
+    { icon: MapPinIcon, label: "Preluare", value: "De la adresa ta" },
+    { icon: PackageIcon, label: "Colete", value: "Pe aceeasi cursa" },
+  ];
 
   return (
-    <>
-      <SiteHeader currentPageLabel={`Ruta ${market.country}`} />
-
-      <main className="pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
-        <section className="bg-foreground py-20 text-white lg:py-28">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <nav className="text-xs font-medium uppercase tracking-[0.2em] text-white/45">
-              <Link href="/" className="transition-colors hover:text-accent">
-                Acasa
-              </Link>
-              {" / "}
-              <Link href="/transport/" className="transition-colors hover:text-accent">
-                Transport
-              </Link>
-              {" / "}
-              <span className="text-accent">{market.country}</span>
-            </nav>
-
-            <h1
-              className="mt-6 max-w-4xl text-5xl font-light leading-tight tracking-tight lg:text-6xl"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              Transport persoane si colete Romania - {market.country}
-            </h1>
-            <p className="mt-8 max-w-3xl text-lg leading-relaxed text-white/70">
-              Mariva Travel opereaza transport international door-to-door pe
-              ruta Romania - {market.country}, cu preluare de la adresa,
-              rezervari rapide si suport direct pentru pasageri, bagaje si
-              colete. Orase cautate frecvent pe aceasta ruta includ{" "}
-              {market.popularCities.join(", ")}.
-            </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <a
-                href={`tel:${siteConfig.dispatchPhoneE164}`}
-                className="inline-flex h-12 items-center justify-center bg-accent px-6 text-sm font-semibold uppercase tracking-[0.16em] text-foreground transition-colors hover:bg-white"
+    <main>
+      <PageHero
+        breadcrumbs={[
+          { name: "Acasa", href: "/" },
+          { name: "Rute", href: "/transport/" },
+          { name: market.country },
+        ]}
+        eyebrow={`Ruta Romania - ${market.country}`}
+        title={<>Transport persoane si colete Romania - {market.country}</>}
+        lead={market.intro}
+        meta={
+          <div className="flex flex-wrap gap-2">
+            {[`~ ${market.durationHint}`, "Door-to-door", "Dispecerat 24/7"].map((label) => (
+              <span
+                key={label}
+                className="rounded-full border border-white/15 bg-white/[0.05] px-3.5 py-1.5 text-sm text-white/80"
               >
-                Suna pentru Oferta
-              </a>
-              <a
-                href={`https://wa.me/${siteConfig.whatsappPhoneE164.replace("+", "")}?text=${encodeURIComponent(`Buna ziua! Doresc o oferta pentru transport persoane sau colete pe ruta Romania - ${market.country}.`)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center border border-white/20 px-6 text-sm font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:border-white hover:bg-white/10"
-              >
-                Scrie pe WhatsApp
-              </a>
-            </div>
+                {label}
+              </span>
+            ))}
           </div>
-        </section>
+        }
+        aside={
+          <QuoteWidget
+            defaultDestination={market.slug}
+            title={`Oferta pentru ${market.country}`}
+          />
+        }
+      />
 
-        <section className="bg-background py-24 lg:py-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid gap-8 lg:grid-cols-3">
-              <article className="card-premium p-6 lg:col-span-2">
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Ce include ruta
+      <section className="section-y bg-background">
+        <div className="container-x">
+          <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {facts.map((fact, index) => (
+              <div
+                key={fact.label}
+                data-reveal
+                style={{ "--reveal-delay": `${index * 60}ms` } as React.CSSProperties}
+                className="card flex flex-col gap-3 p-5"
+              >
+                <span className="icon-badge h-10 w-10 rounded-xl">
+                  <fact.icon className="h-4 w-4" />
                 </span>
-                <h2
-                  className="mt-4 text-3xl font-light tracking-tight text-foreground"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  Serviciu gandit pentru drum lung, fara complicatii
-                </h2>
-                <p className="mt-6 max-w-3xl leading-7 text-muted">
-                  Daca ai nevoie de transport persoane Romania - {market.country}
-                  , serviciul Mariva Travel este orientat pe confort, traseu
-                  clar si comunicare rapida. Poti calatori fara stresul
-                  schimbarii mijloacelor de transport si fara drumuri
-                  suplimentare pentru preluarea bagajelor.
-                </p>
-                <div className="mt-8 grid gap-4 md:grid-cols-2">
-                  {siteConfig.serviceBenefits.map((benefit) => (
-                    <div
-                      key={benefit}
-                      className="flex items-start gap-3 border border-border bg-background p-4"
-                    >
-                      <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      </span>
-                      <span className="leading-7 text-foreground">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </article>
+                <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-muted">
+                  {fact.label}
+                </dt>
+                <dd className="-mt-1 font-semibold text-foreground">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
 
-              <aside className="border border-border bg-card p-6">
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Orase populare
-                </span>
-                <h2 className="mt-4 text-2xl font-medium text-foreground">
-                  Cereri frecvente pentru {market.country}
+          <div className="mt-16 grid gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-16">
+            <div data-reveal>
+              <p className="eyebrow">Ce include ruta</p>
+              <h2 className="heading-lg mt-4 text-balance">
+                Drum lung, fara complicatii, pana in {market.country}
+              </h2>
+              <p className="lead mt-6 text-muted">
+                Daca ai nevoie de transport persoane Romania - {market.country}, serviciul Mariva
+                Travel este orientat pe confort, traseu clar si comunicare rapida. Calatoresti fara
+                schimbari de mijloace de transport si fara drumuri suplimentare cu bagajele.
+              </p>
+              <ul className="mt-8 flex flex-col gap-3">
+                {market.highlights.map((highlight) => (
+                  <li key={highlight} className="card flex items-start gap-4 p-4">
+                    <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-accent">
+                      <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
+                    </span>
+                    <span className="leading-7 text-foreground">{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <aside data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+              <div className="card p-6 sm:p-7 lg:sticky lg:top-28">
+                <p className="eyebrow">Orase deservite</p>
+                <h2 className="mt-3 text-xl font-semibold text-foreground">
+                  Destinatii frecvente in {market.country}
                 </h2>
-                <ul className="mt-6 flex flex-col gap-3">
-                  {market.popularCities.map((city) => (
-                    <li
-                      key={city}
-                      className="flex items-center justify-between border border-border bg-background px-4 py-3 text-sm font-medium text-foreground"
-                    >
-                      <span>{city}</span>
-                      <span className="text-xs uppercase tracking-[0.16em] text-muted">
-                        door-to-door
-                      </span>
+                <ul className="mt-5 flex flex-wrap gap-2">
+                  {market.cities.map((city) => (
+                    <li key={city} className="chip">
+                      <MapPinIcon className="h-3.5 w-3.5 text-accent-ink" />
+                      {city}
                     </li>
                   ))}
                 </ul>
-                <p className="mt-6 text-sm leading-6 text-muted">
-                  Pentru o oferta exacta, trimite ruta completa, adresa de
-                  preluare, destinatia si data aproximativa a plecarii.
+                <p className="mt-5 text-sm leading-6 text-muted">
+                  Localitatea ta nu e in lista? Trimite adresa completa: daca se afla pe traseul
+                  cursei, o includem.
                 </p>
-              </aside>
-            </div>
+                <div className="hairline my-6" />
+                <ul className="flex flex-col gap-2.5 text-sm">
+                  {siteConfig.serviceBenefits.map((benefit) => (
+                    <li key={benefit} className="flex items-center gap-2.5 text-foreground/85">
+                      <CheckIcon className="h-4 w-4 shrink-0 text-accent-ink" strokeWidth={2.5} />
+                      {benefit}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </aside>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="bg-background pb-24 lg:pb-32">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid gap-6 lg:grid-cols-3">
-              <article className="card-premium p-6">
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Pasageri
-                </span>
-                <h2 className="mt-4 text-2xl font-medium text-foreground">
-                  Transport persoane Romania - {market.country}
-                </h2>
-                <p className="mt-4 leading-7 text-muted">
-                  Solutie potrivita pentru vacante, vizite la familie, plecari
-                  la munca, reveniri in tara sau deplasari planificate din timp.
-                </p>
-              </article>
-
-              <article className="card-premium p-6">
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Colete
-                </span>
-                <h2 className="mt-4 text-2xl font-medium text-foreground">
-                  Colete, bagaje si pachete
-                </h2>
-                <p className="mt-4 leading-7 text-muted">
-                  Pe aceeasi retea internationala poti trimite colete si bagaje
-                  catre familie sau parteneri din {market.country}, in limita
-                  spatiului disponibil pe cursa.
-                </p>
-              </article>
-
-              <article className="card-premium p-6">
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Rezervare
-                </span>
-                <h2 className="mt-4 text-2xl font-medium text-foreground">
-                  Telefon si WhatsApp
-                </h2>
-                <p className="mt-4 leading-7 text-muted">
-                  Confirmarea se face rapid direct din dispecerat, fara cont,
-                  fara formular lung si fara pasi inutili.
-                </p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <FaqSection
-          title={`Intrebari frecvente pentru ruta Romania - ${market.country}`}
-          intro={`Mai jos gasesti raspunsuri utile pentru clientii care cauta transport persoane sau colete pe ruta Romania - ${market.country}.`}
-          items={faqItems}
-        />
-
-        <section className="bg-foreground py-20 text-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
+      {relatedPosts.length > 0 ? (
+        <section className="section-y bg-surface/60">
+          <div className="container-x">
+            <div data-reveal className="flex flex-wrap items-end justify-between gap-6">
               <div>
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Rezervare rapida
-                </span>
-                <h2
-                  className="mt-4 text-4xl font-light tracking-tight lg:text-5xl"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  Cere acum oferta pentru Romania - {market.country}
-                </h2>
-                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/65">
-                  Spune-ne data, ruta, localitatea de plecare si daca transporti
-                  persoane sau colete. Revenim rapid cu detalii despre cursa.
-                </p>
+                <p className="eyebrow">Ghiduri pentru aceasta ruta</p>
+                <h2 className="heading-lg mt-4">Citeste inainte de plecare</h2>
               </div>
-
-              <div className="flex flex-col gap-4">
-                <a
-                  href={`tel:${siteConfig.dispatchPhoneE164}`}
-                  className="inline-flex h-12 items-center justify-center bg-accent px-6 text-sm font-semibold uppercase tracking-[0.16em] text-foreground transition-colors hover:bg-white"
+              <Link href="/blog/" className="btn btn-outline btn-sm">
+                Toate ghidurile <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {relatedPosts.map((post, index) => (
+                <div
+                  key={post.slug}
+                  data-reveal
+                  style={{ "--reveal-delay": `${index * 80}ms` } as React.CSSProperties}
                 >
-                  {siteConfig.dispatchPhoneDisplay}
-                </a>
-                <a
-                  href={`https://wa.me/${siteConfig.whatsappPhoneE164.replace("+", "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center border border-white/20 px-6 text-sm font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:border-white hover:bg-white/10"
-                >
-                  {siteConfig.whatsappPhoneDisplay}
-                </a>
-              </div>
+                  <PostCard post={post} />
+                </div>
+              ))}
             </div>
           </div>
         </section>
-      </main>
+      ) : null}
 
-      <MobileCallBar />
+      <FaqSection
+        title={`Intrebari frecvente: Romania - ${market.country}`}
+        intro={`Raspunsuri pentru cei care cauta transport persoane sau colete pe ruta Romania - ${market.country}.`}
+        items={faqItems}
+      />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(organizationJsonLd),
-        }}
+      <section className="bg-background pb-16 lg:pb-20">
+        <div className="container-x">
+          <h2 data-reveal className="text-lg font-semibold text-foreground">
+            Alte rute Mariva Travel
+          </h2>
+          <ul data-reveal className="mt-5 flex flex-wrap gap-2">
+            {otherMarkets.map((item) => (
+              <li key={item.slug}>
+                <Link
+                  href={`/transport/${item.slug}/`}
+                  className="chip transition-colors hover:border-foreground/40"
+                >
+                  <span className="text-[0.68rem] font-bold text-accent-ink">{item.code}</span>
+                  Romania - {item.country}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <CtaBand
+        title={`Cere acum oferta pentru Romania - ${market.country}`}
+        whatsappMessage={whatsappMessage}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(routeServiceJsonLd),
-        }}
+
+      <JsonLd
+        data={[
+          getOrganizationJsonLd(),
+          getRouteServiceJsonLd(market),
+          getFaqJsonLd(faqItems),
+          getBreadcrumbJsonLd([
+            { name: "Acasa", path: "/" },
+            { name: "Transport", path: "/transport/" },
+            { name: market.country, path: `/transport/${market.slug}/` },
+          ]),
+        ]}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqJsonLd),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbJsonLd),
-        }}
-      />
-    </>
+    </main>
   );
 }

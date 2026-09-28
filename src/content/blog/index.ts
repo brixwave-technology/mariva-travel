@@ -6,6 +6,7 @@ import { sfaturiPosts } from "./posts-sfaturi";
 import type { BlogCategorySlug, BlogPost } from "./types";
 
 export { blogCategories, getCategoryBySlug } from "./types";
+export { formatBlogDate } from "./format";
 export type { BlogCategorySlug, BlogPost, BlogSection } from "./types";
 
 const allPosts: BlogPost[] = [
@@ -61,13 +62,4 @@ export function getBlogWordCount(post: BlogPost): number {
 
     return total + sectionText.split(/\s+/).filter(Boolean).length;
   }, 0);
-}
-
-export function formatBlogDate(value: string): string {
-  return new Intl.DateTimeFormat("ro-RO", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(`${value}T00:00:00Z`));
 }

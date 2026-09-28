@@ -1,9 +1,23 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MobileCallBar } from "@/components/layout/mobile-call-bar";
-import { SiteHeader } from "@/components/layout/site-header";
+import { ArticleToc } from "@/components/blog/article-toc";
+import { PostCard } from "@/components/blog/post-card";
+import { ReadingProgress } from "@/components/blog/reading-progress";
+import { ShareButtons } from "@/components/blog/share-buttons";
 import { FaqSection } from "@/components/sections/faq-section";
+import { CtaBand } from "@/components/ui/cta-band";
+import {
+  ArrowRightIcon,
+  CalendarIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  ClockIcon,
+  PhoneIcon,
+  WhatsAppIcon,
+} from "@/components/ui/icons";
+import { JsonLd } from "@/components/ui/json-ld";
+import { PageHero } from "@/components/ui/page-hero";
 import { getDestinationMarketBySlug, siteConfig } from "@/config/site";
 import {
   blogPosts,
@@ -13,6 +27,7 @@ import {
   getCategoryBySlug,
   getRelatedPosts,
 } from "@/content/blog";
+import { getWhatsAppHref } from "@/lib/contact";
 import { createPageMetadata } from "@/lib/seo";
 import {
   getArticleJsonLd,
@@ -32,9 +47,7 @@ export function generateStaticParams() {
   return blogPosts.map((post) => ({ slug: post.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   const { slug } = await params;
   const post = getBlogPostBySlug(slug);
 
@@ -47,11 +60,23 @@ export async function generateMetadata({
     });
   }
 
+  const pageTitle = post.seoTitle ?? post.title;
+
   return createPageMetadata({
-    title: post.title,
+    title: pageTitle,
+    // Titlurile lungi nu mai primesc sufixul de brand, ca sa nu fie trunchiate in Google.
+    absoluteTitle: pageTitle.length > 48,
     description: post.description,
     path: `/blog/${post.slug}/`,
     keywords: post.keywords,
+    image: `/og/ghid-${post.slug}.png`,
+    imageAlt: post.title,
+    article: {
+      publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt,
+      section: getCategoryBySlug(post.category)?.name ?? "Ghiduri",
+      tags: post.keywords,
+    },
   });
 }
 
@@ -68,265 +93,217 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const relatedMarkets = post.relatedRouteSlugs
     .map((routeSlug) => getDestinationMarketBySlug(routeSlug))
     .filter((market) => market !== undefined);
-
-  const organizationJsonLd = getOrganizationJsonLd();
-  const articleJsonLd = getArticleJsonLd({
-    title: post.title,
-    description: post.description,
-    path: `/blog/${post.slug}/`,
-    publishedAt: post.publishedAt,
-    updatedAt: post.updatedAt,
-    keywords: post.keywords,
-    sectionName: category?.name ?? "Transport international",
-    wordCount: getBlogWordCount(post),
-  });
-  const faqJsonLd = getFaqJsonLd(post.faq);
-  const breadcrumbJsonLd = getBreadcrumbJsonLd([
-    { name: "Acasa", path: "/" },
-    { name: "Blog", path: "/blog/" },
-    { name: post.title, path: `/blog/${post.slug}/` },
-  ]);
+  const tocItems = post.sections.map((section, index) => ({
+    id: `sectiunea-${index + 1}`,
+    label: section.heading,
+  }));
+  const articleUrl = `${siteConfig.url}/blog/${post.slug}/`;
 
   return (
-    <>
-      <SiteHeader currentPageLabel={category?.name ?? "Blog"} />
+    <main>
+      <ReadingProgress targetId="articol" />
 
-      <main className="pb-[calc(5rem+env(safe-area-inset-bottom))] md:pb-0">
-        <section className="bg-foreground py-16 text-white lg:py-24">
-          <div className="mx-auto max-w-4xl px-6 lg:px-8">
-            <nav className="text-xs font-medium uppercase tracking-[0.2em] text-white/45">
-              <Link href="/" className="transition-colors hover:text-accent">
-                Acasa
-              </Link>
-              {" / "}
-              <Link href="/blog/" className="transition-colors hover:text-accent">
-                Blog
-              </Link>
-              {" / "}
-              <span className="text-accent">{category?.name}</span>
-            </nav>
-
-            <h1
-              className="mt-6 text-4xl font-light leading-tight tracking-tight lg:text-5xl"
-              style={{ fontFamily: "var(--font-playfair)" }}
-            >
-              {post.title}
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-white/70">
-              {post.excerpt}
-            </p>
-            <p className="mt-8 text-xs font-medium uppercase tracking-[0.16em] text-white/45">
-              Publicat {formatBlogDate(post.publishedAt)} · Actualizat{" "}
-              {formatBlogDate(post.updatedAt)} · {post.readingMinutes} min de
-              citit
-            </p>
+      <PageHero
+        breadcrumbs={[
+          { name: "Acasa", href: "/" },
+          { name: "Ghiduri", href: "/blog/" },
+          { name: category?.name ?? "Ghid", href: `/blog/categorie/${post.category}/` },
+        ]}
+        eyebrow={category?.name}
+        title={post.title}
+        lead={post.excerpt}
+        meta={
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-white/60">
+            <span className="inline-flex items-center gap-2">
+              <CalendarIcon className="h-4 w-4 text-accent" />
+              Actualizat{" "}
+              <time dateTime={post.updatedAt}>{formatBlogDate(post.updatedAt)}</time>
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <ClockIcon className="h-4 w-4 text-accent" />
+              {post.readingMinutes} minute de citit
+            </span>
           </div>
-        </section>
+        }
+      />
 
-        <article className="bg-background py-16 lg:py-20">
-          <div className="mx-auto max-w-4xl px-6 lg:px-8">
-            <nav
-              aria-label="Cuprins"
-              className="border border-border bg-card p-6"
-            >
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                Cuprins
-              </p>
-              <ol className="mt-4 flex flex-col gap-2">
-                {post.sections.map((section, index) => (
-                  <li key={section.heading}>
-                    <a
-                      href={`#sectiunea-${index + 1}`}
-                      className="text-sm leading-6 text-muted transition-colors hover:text-accent"
-                    >
-                      {index + 1}. {section.heading}
+      <div className="bg-background py-12 lg:py-20">
+        <div className="container-x grid gap-12 lg:grid-cols-[minmax(0,1fr)_18.5rem] lg:gap-16 xl:grid-cols-[minmax(0,1fr)_20rem]">
+          <article id="articol" className="min-w-0 max-w-3xl">
+            <details className="card group mb-10 lg:hidden">
+              <summary className="flex cursor-pointer list-none items-center justify-between p-5 font-semibold [&::-webkit-details-marker]:hidden">
+                Cuprins ({tocItems.length} sectiuni)
+                <ChevronDownIcon className="h-5 w-5 text-muted transition-transform group-open:rotate-180" />
+              </summary>
+              <ol className="flex flex-col gap-1 px-5 pb-5">
+                {tocItems.map((item, index) => (
+                  <li key={item.id}>
+                    <a href={`#${item.id}`} className="block py-1.5 text-sm text-muted hover:text-foreground">
+                      {index + 1}. {item.label}
                     </a>
                   </li>
                 ))}
               </ol>
-            </nav>
+            </details>
 
-            {post.sections.map((section, index) => (
-              <section
-                key={section.heading}
-                id={`sectiunea-${index + 1}`}
-                className="mt-14 scroll-mt-24"
-              >
-                <h2
-                  className="text-2xl font-medium tracking-tight text-foreground lg:text-3xl"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  {section.heading}
-                </h2>
-                {section.body.map((paragraph) => (
-                  <p key={paragraph} className="mt-5 leading-8 text-muted">
-                    {paragraph}
-                  </p>
-                ))}
-                {section.bullets ? (
-                  <ul className="mt-6 flex flex-col gap-3">
-                    {section.bullets.map((bullet) => (
-                      <li
-                        key={bullet}
-                        className="flex items-start gap-3 border border-border bg-card p-4"
-                      >
-                        <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent/15 text-accent">
-                          <svg
-                            className="h-3.5 w-3.5"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </span>
-                        <span className="leading-7 text-foreground">
-                          {bullet}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
-              </section>
-            ))}
+            <div className="prose-article">
+              {post.sections.map((section, index) => (
+                <section key={section.heading} id={tocItems[index].id} className="scroll-mt-28 pb-4">
+                  <h2 className={`heading-md text-foreground ${index === 0 ? "" : "mt-10"}`}>
+                    {section.heading}
+                  </h2>
+                  {section.body.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {section.bullets ? (
+                    <ul className="mt-6 flex flex-col gap-2.5">
+                      {section.bullets.map((bullet) => (
+                        <li
+                          key={bullet}
+                          className="flex items-start gap-3 rounded-2xl border border-border bg-white px-4 py-3.5"
+                        >
+                          <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-ink text-accent">
+                            <CheckIcon className="h-3.5 w-3.5" strokeWidth={3} />
+                          </span>
+                          <span className="leading-7 text-foreground">{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                </section>
+              ))}
+            </div>
 
-            <aside className="article-takeaway mt-14 border-l-2 border-accent bg-card p-6">
-              <p className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                Pe scurt
-              </p>
-              <p className="mt-4 text-lg leading-8 text-foreground">
-                {post.takeaway}
-              </p>
+            <aside className="article-takeaway bg-ink-gradient relative mt-12 overflow-hidden rounded-3xl p-7 text-white sm:p-8">
+              <p className="eyebrow eyebrow-light">Pe scurt</p>
+              <p className="mt-4 font-display text-xl leading-relaxed sm:text-2xl">{post.takeaway}</p>
             </aside>
 
             {relatedMarkets.length > 0 ? (
-              <section className="mt-14">
-                <h2 className="text-xl font-medium text-foreground">
-                  Rute mentionate in articol
-                </h2>
-                <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-12">
+                <h2 className="text-lg font-semibold text-foreground">Rute mentionate in ghid</h2>
+                <ul className="mt-4 grid gap-3 sm:grid-cols-3">
                   {relatedMarkets.map((market) => (
-                    <Link
-                      key={market.slug}
-                      href={`/transport/${market.slug}/`}
-                      className="inline-flex border border-border bg-card px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
-                    >
-                      Transport Romania - {market.country}
-                    </Link>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-          </div>
-        </article>
-
-        <FaqSection
-          title="Intrebari frecvente pe acest subiect"
-          intro="Raspunsuri scurte la cele mai frecvente intrebari primite in dispecerat pe aceasta tema."
-          items={post.faq}
-        />
-
-        {relatedPosts.length > 0 ? (
-          <section className="bg-background pb-24 lg:pb-32">
-            <div className="mx-auto max-w-7xl px-6 lg:px-8">
-              <h2
-                className="text-3xl font-light tracking-tight text-foreground lg:text-4xl"
-                style={{ fontFamily: "var(--font-playfair)" }}
-              >
-                Continua cu aceste articole
-              </h2>
-              <div className="mt-10 grid gap-6 md:grid-cols-3">
-                {relatedPosts.map((related) => (
-                  <article
-                    key={related.slug}
-                    className="card-premium flex flex-col p-6 hover-lift"
-                  >
-                    <span className="text-xs font-medium uppercase tracking-[0.16em] text-accent">
-                      {related.readingMinutes} min de citit
-                    </span>
-                    <h3 className="mt-4 text-lg font-medium leading-7 text-foreground">
+                    <li key={market.slug}>
                       <Link
-                        href={`/blog/${related.slug}/`}
-                        className="transition-colors hover:text-accent"
+                        href={`/transport/${market.slug}/`}
+                        className="card card-hover group flex items-center justify-between gap-3 p-4"
                       >
-                        {related.title}
+                        <span className="flex items-center gap-3">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-[0.68rem] font-bold text-accent">
+                            {market.code}
+                          </span>
+                          <span className="text-sm font-semibold text-foreground">
+                            Romania - {market.country}
+                          </span>
+                        </span>
+                        <ArrowRightIcon className="h-4 w-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" />
                       </Link>
-                    </h3>
-                    <p className="mt-4 flex-1 leading-7 text-muted">
-                      {related.excerpt}
-                    </p>
-                  </article>
-                ))}
+                    </li>
+                  ))}
+                </ul>
               </div>
+            ) : null}
+
+            <div className="mt-10 border-t border-border pt-8 lg:hidden">
+              <ShareButtons url={articleUrl} title={post.title} />
             </div>
-          </section>
-        ) : null}
+          </article>
 
-        <section className="bg-foreground py-20 text-white">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
-              <div>
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-accent">
-                  Rezervare rapida
-                </span>
-                <h2
-                  className="mt-4 text-4xl font-light tracking-tight lg:text-5xl"
-                  style={{ fontFamily: "var(--font-playfair)" }}
-                >
-                  Cere oferta pentru ruta ta
-                </h2>
-                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/65">
-                  Trimite ruta, data si numarul de persoane sau detaliile
-                  coletului. Revenim rapid cu disponibilitatea si tariful.
+          <aside className="hidden lg:block">
+            <div className="sticky top-28 flex flex-col gap-8">
+              <ArticleToc items={tocItems} />
+
+              <div className="rounded-3xl bg-ink p-6 text-white">
+                <p className="font-display text-xl leading-snug">Ai nevoie de transport?</p>
+                <p className="mt-2 text-sm leading-6 text-white/60">
+                  Trimite ruta si data, iar dispeceratul revine rapid cu oferta.
                 </p>
+                <div className="mt-5 flex flex-col gap-2">
+                  <a
+                    href={getWhatsAppHref(
+                      `Buna ziua! Am citit ghidul "${post.title}" si doresc o oferta de transport.`,
+                    )}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-whatsapp btn-sm"
+                  >
+                    <WhatsAppIcon className="h-4 w-4" /> WhatsApp
+                  </a>
+                  <a href={`tel:${siteConfig.dispatchPhoneE164}`} className="btn btn-gold btn-sm">
+                    <PhoneIcon className="h-4 w-4" /> {siteConfig.dispatchPhoneDisplay}
+                  </a>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-4">
-                <a
-                  href={`tel:${siteConfig.dispatchPhoneE164}`}
-                  className="inline-flex h-12 items-center justify-center bg-accent px-6 text-sm font-semibold uppercase tracking-[0.16em] text-foreground transition-colors hover:bg-white"
-                >
-                  {siteConfig.dispatchPhoneDisplay}
-                </a>
-                <a
-                  href={`https://wa.me/${siteConfig.whatsappPhoneE164.replace("+", "")}?text=${encodeURIComponent(
-                    "Buna ziua! Am citit un articol pe blogul Mariva Travel si doresc o oferta de transport.",
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center justify-center border border-white/20 px-6 text-sm font-semibold uppercase tracking-[0.16em] text-white transition-colors hover:border-white hover:bg-white/10"
-                >
-                  Scrie pe WhatsApp
-                </a>
+              <ShareButtons url={articleUrl} title={post.title} />
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <FaqSection
+        className="bg-surface/60"
+        title="Intrebari frecvente pe acest subiect"
+        intro="Raspunsuri scurte la intrebarile primite cel mai des in dispecerat pe aceasta tema."
+        items={post.faq}
+      />
+
+      {relatedPosts.length > 0 ? (
+        <section className="section-y bg-background">
+          <div className="container-x">
+            <div data-reveal className="flex flex-wrap items-end justify-between gap-6">
+              <div>
+                <p className="eyebrow">Citeste in continuare</p>
+                <h2 className="heading-lg mt-4">Ghiduri similare</h2>
               </div>
+              <Link href="/blog/" className="btn btn-outline btn-sm">
+                Toate ghidurile <ArrowRightIcon className="h-4 w-4" />
+              </Link>
+            </div>
+            <div className="mt-10 grid gap-5 md:grid-cols-3">
+              {relatedPosts.map((related, index) => (
+                <div
+                  key={related.slug}
+                  data-reveal
+                  style={{ "--reveal-delay": `${index * 80}ms` } as React.CSSProperties}
+                >
+                  <PostCard post={related} />
+                </div>
+              ))}
             </div>
           </div>
         </section>
-      </main>
+      ) : null}
 
-      <MobileCallBar />
+      <CtaBand
+        title="Cere oferta pentru ruta ta"
+        whatsappMessage={`Buna ziua! Am citit ghidul "${post.title}" si doresc o oferta de transport.`}
+      />
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      <JsonLd
+        data={[
+          getOrganizationJsonLd(),
+          getArticleJsonLd({
+            title: post.title,
+            description: post.description,
+            path: `/blog/${post.slug}/`,
+            publishedAt: post.publishedAt,
+            updatedAt: post.updatedAt,
+            keywords: post.keywords,
+            sectionName: category?.name ?? "Transport international",
+            wordCount: getBlogWordCount(post),
+            imageKey: `ghid-${post.slug}`,
+          }),
+          getFaqJsonLd(post.faq),
+          getBreadcrumbJsonLd([
+            { name: "Acasa", path: "/" },
+            { name: "Blog", path: "/blog/" },
+            { name: category?.name ?? "Ghiduri", path: `/blog/categorie/${post.category}/` },
+            { name: post.title, path: `/blog/${post.slug}/` },
+          ]),
+        ]}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
-    </>
+    </main>
   );
 }
