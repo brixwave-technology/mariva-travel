@@ -269,8 +269,8 @@ export const siteConfig = {
   url: "https://marivatravel.com",
   dispatchPhoneDisplay: "0744 888 888",
   dispatchPhoneE164: "+40744888888",
-  whatsappPhoneDisplay: "0744 111 111",
-  whatsappPhoneE164: "+40744111111",
+  whatsappPhoneDisplay: "0742 032 222",
+  whatsappPhoneE164: "+40742032222",
   description:
     "Mariva Travel ofera transport persoane si colete door-to-door intre Romania si Europa, cu plecari zilnice, preluare de la adresa, tarife corecte si rezervari rapide pe telefon sau WhatsApp.",
   shortDescription:
